@@ -1,0 +1,4 @@
+#!/bin/bash
+yad --title="Connection Warning" --text="Please connect to the internet." \
+    --button="OK:0" --width=360 --center --window-icon="network-error" \
+    --image="network-error" --text-align=center
