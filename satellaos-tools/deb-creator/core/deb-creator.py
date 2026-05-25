@@ -459,9 +459,9 @@ class DebCreator(QMainWindow):
 
         # ── Package Information ───────────────────────────────────────
         sec("PACKAGE INFORMATION")
-        linef("Package Name  (apt install / purge <this>)", "e.g.: apt-nir", "f_pkg")
-        linef("Command Name  (to run in terminal)", "e.g.: apt-nir  —  if empty, package name is used", "f_cmd")
-        linef("Application Name  (display name)",             "e.g.: APT Nir",           "f_app")
+        linef("Package Name  (apt install / purge <this>)", "e.g.: satellaos-papirus-color-manager", "f_pkg")
+        linef("Command Name  (to run in terminal)", "e.g.: papirus-color-manager  —  if empty, package name is used", "f_cmd")
+        linef("Application Name  (display name)",             "e.g.: Papirus Color Manager",           "f_app")
         linef("Version",                         "e.g.: 1.0.0",                           "f_ver")
         linef("Maintainer",                       "e.g.: Random <random@randomos>",     "f_maint")
         linef("Description",                         "Short package description",                "f_desc")
