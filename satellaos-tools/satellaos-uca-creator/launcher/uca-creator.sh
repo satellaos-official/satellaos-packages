@@ -1,9 +1,9 @@
 #!/bin/bash
 
+Name="uca-creator"
 URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-$Name/core/$Name.py"
 File="/tmp/$Name.py"
 Location="/tmp/"
-Name="uca-creator"
 
 if ! wget -q --spider --timeout=5 https://raw.githubusercontent.com 2>/dev/null; then
     if command -v satellaos-netcheck &> /dev/null; then
