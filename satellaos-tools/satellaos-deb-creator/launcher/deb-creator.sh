@@ -1,7 +1,8 @@
 #!/bin/bash
 
-URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/core/deb-creator.py"
-File="/tmp/deb-creator.py"
+Name="deb-creator"
+URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-$Name/core/$Name.py"
+File="/tmp/$Name.py"
 Location="/tmp/"
 
 if ! wget -q --spider --timeout=5 https://raw.githubusercontent.com 2>/dev/null; then

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-papirus-color-manager/core/papirus-color-manager.py"
-File="/tmp/papirus-color-manager.py"
+Name="papirus-color-manager"
+URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-$Name/core/$Name.py"
+File="/tmp/$Name.py"
 Location="/tmp/"
 
 if ! wget -q --spider --timeout=5 https://raw.githubusercontent.com 2>/dev/null; then

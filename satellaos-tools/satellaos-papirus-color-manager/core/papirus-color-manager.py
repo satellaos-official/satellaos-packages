@@ -238,7 +238,7 @@ def gui_mode():
         def run(self):
             base_raw_url = (
                 "https://raw.githubusercontent.com/satellaos-official/"
-                "satellaos-packages/main/satellaos-tools/papirus-color-manager/icons/"
+                "satellaos-packages/main/satellaos-tools/satellaos-papirus-color-manager/icons/"
             )
             files = [
                 f"folder-{self.color}.svg",
