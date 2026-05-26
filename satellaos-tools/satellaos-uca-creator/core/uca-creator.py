@@ -316,7 +316,7 @@ RESET  = "\033[0m"
 def run_whiptail_checklist() -> list[str] | None:
     """Runs whiptail checklist dialog and returns selected tokens."""
     cmd = [
-        "whiptail", "--title", "Thunar Custom Actions Generator",
+        "whiptail", "--title", "Uca Creator",
         "--checklist", "\nEklenecek eylemleri boşluk (Space) tuşu ile seçin:",
         "20", "75", "14"
     ]
@@ -355,7 +355,7 @@ def cli_main(args: list[str]) -> int:
         # Fallback to pure text mode if whiptail is cancelled or missing
         if tokens is None:
             print(f"{CYAN}╔══════════════════════════════════════════════════════╗{RESET}")
-            print(f"{CYAN}║       Thunar Custom Actions Generator (uca.xml)      ║{RESET}")
+            print(f"{CYAN}║       Uca Creator (uca.xml)      ║{RESET}")
             print(f"{CYAN}╚══════════════════════════════════════════════════════╝{RESET}")
             print()
             print(f"{BOLD}Select the actions you want to add.{RESET}")
@@ -514,7 +514,7 @@ def gui_main():
     class UCACreator(QMainWindow):
         def __init__(self):
             super().__init__()
-            self.setWindowTitle("Thunar Custom Actions Generator")
+            self.setWindowTitle("Uca Creator")
             self.setMinimumSize(700, 560)
             self._checkboxes: dict[int, QCheckBox] = {}
             self._apply_global_style()

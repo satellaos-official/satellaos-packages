@@ -60,7 +60,7 @@ sudo apt install --install-recommends -y python3 python3-pyqt6 whiptail python3-
 Simply run the script without any arguments:
 
 ```bash
-python3 uca-create-v3.py
+python3 uca-creator.py
 ```
 
 A window will open where you can:
@@ -73,19 +73,19 @@ A window will open where you can:
 **Add all actions at once:**
 
 ```bash
-python3 uca-create-v3.py --cli all
+python3 uca-creator.py --cli all
 ```
 
 **Add specific actions by number:**
 
 ```bash
-python3 uca-create-v3.py --cli 1 3 9 12
+python3 uca-creator.py --cli 1 3 9 12
 ```
 
 **Interactive CLI (whiptail checklist or text prompt):**
 
 ```bash
-python3 uca-create-v3.py --cli
+python3 uca-creator.py --cli
 ```
 
 If `whiptail` is installed, a terminal checklist dialog appears. Otherwise, a plain text prompt is shown.
@@ -93,7 +93,7 @@ If `whiptail` is installed, a terminal checklist dialog appears. Otherwise, a pl
 **Show help:**
 
 ```bash
-python3 uca-create-v3.py --help
+python3 uca-creator.py --help
 ```
 
 ---
