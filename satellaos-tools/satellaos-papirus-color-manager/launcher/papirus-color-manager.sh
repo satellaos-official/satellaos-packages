@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/papirus-color-manager/core/papirus-color-manager.py"
+URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-papirus-color-manager/core/papirus-color-manager.py"
 File="/tmp/papirus-color-manager.py"
 Location="/tmp/"
 
