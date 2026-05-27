@@ -9,7 +9,8 @@ import json
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QLabel, QPushButton, QMessageBox, QFrame, QLineEdit, QTextEdit,
-    QFileDialog, QScrollArea, QListWidget, QListWidgetItem, QCheckBox
+    QFileDialog, QScrollArea, QListWidget, QListWidgetItem, QCheckBox,
+    QScrollBar
 )
 from PyQt6.QtGui import QFont, QTextCursor
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
@@ -439,6 +440,7 @@ class DebCreator(QMainWindow):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         fw = QWidget(); fw.setStyleSheet("background: transparent;")
         form = QVBoxLayout(fw)
         form.setContentsMargins(20, 14, 20, 20)
@@ -1064,7 +1066,28 @@ class DebCreator(QMainWindow):
         form.addStretch()
 
         scroll.setWidget(fw)
-        ll.addWidget(scroll)
+
+        # Sol scrollbar container
+        scroll_container = QWidget()
+        scroll_container_layout = QHBoxLayout(scroll_container)
+        scroll_container_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_container_layout.setSpacing(0)
+
+        self._left_form_scrollbar = QScrollBar(Qt.Orientation.Vertical)
+        self._left_form_scrollbar.setFixedWidth(6)
+        scroll.verticalScrollBar().rangeChanged.connect(
+            lambda mn, mx: self._left_form_scrollbar.setRange(mn, mx)
+        )
+        scroll.verticalScrollBar().valueChanged.connect(
+            self._left_form_scrollbar.setValue
+        )
+        self._left_form_scrollbar.valueChanged.connect(
+            scroll.verticalScrollBar().setValue
+        )
+
+        scroll_container_layout.addWidget(self._left_form_scrollbar)
+        scroll_container_layout.addWidget(scroll)
+        ll.addWidget(scroll_container)
 
         # — build footer —
         foot = QWidget()
@@ -1149,7 +1172,28 @@ class DebCreator(QMainWindow):
                 font-size:12px;
             }}
         """)
-        rl.addWidget(self.log_area)
+        self.log_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        log_scroll_container = QWidget()
+        log_scroll_layout = QHBoxLayout(log_scroll_container)
+        log_scroll_layout.setContentsMargins(0, 0, 0, 0)
+        log_scroll_layout.setSpacing(0)
+
+        self._log_scrollbar = QScrollBar(Qt.Orientation.Vertical)
+        self._log_scrollbar.setFixedWidth(6)
+        self.log_area.verticalScrollBar().rangeChanged.connect(
+            lambda mn, mx: self._log_scrollbar.setRange(mn, mx)
+        )
+        self.log_area.verticalScrollBar().valueChanged.connect(
+            self._log_scrollbar.setValue
+        )
+        self._log_scrollbar.valueChanged.connect(
+            self.log_area.verticalScrollBar().setValue
+        )
+
+        log_scroll_layout.addWidget(self._log_scrollbar)
+        log_scroll_layout.addWidget(self.log_area)
+        rl.addWidget(log_scroll_container)
 
         self.status_bar = QLabel("Ready.")
         self.status_bar.setFixedHeight(28)

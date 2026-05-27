@@ -2,15 +2,15 @@
 """
 Papirus Color Manager
 ─────────────────────
-GUI + CLI aracı: Papirus ikon temasının klasör renklerini yönetir.
+GUI + CLI tool: Manages folder colors for the Papirus icon theme.
 
-Kullanım:
-  python3 papirus-color-manager.py              → Grafik arayüzü açar
-  python3 papirus-color-manager.py --gui         → Grafik arayüzü açar
-  python3 papirus-color-manager.py --cli         → Etkileşimli terminal arayüzü
-  python3 papirus-color-manager.py --color <ad>  → Doğrudan renk uygular
-  python3 papirus-color-manager.py --list        → Mevcut renkleri listeler
-  python3 papirus-color-manager.py --help        → Bu yardım mesajını gösterir
+Usage:
+  python3 papirus-color-manager.py              → Opens graphical interface
+  python3 papirus-color-manager.py --gui         → Opens graphical interface
+  python3 papirus-color-manager.py --cli         → Interactive terminal interface
+  python3 papirus-color-manager.py --color <name> → Applies color directly
+  python3 papirus-color-manager.py --list        → Lists available colors
+  python3 papirus-color-manager.py --help        → Shows this help message
 """
 
 import subprocess
@@ -18,7 +18,7 @@ import os
 import sys
 
 
-# ─── Sabitler ────────────────────────────────────────────────────────────────
+# ─── Constants ───────────────────────────────────────────────────────────────
 
 COLORS = [
     "adwaita", "blue", "breeze", "carmine", "darkcyan", "green",
@@ -36,16 +36,16 @@ BANNER = r"""
             |_|          M a n a g e r                       
 """
 
-# ─── Renk Uygulama (ortak) ───────────────────────────────────────────────────
+# ─── Color Application (Common) ──────────────────────────────────────────────
 
 def apply_color(color: str, verbose: bool = True) -> bool:
-    """Rengi sisteme uygular; başarılıysa True döner."""
+    """Applies the color to the system; returns True if successful."""
     if color not in COLORS:
-        print(f"[HATA] '{color}' geçerli bir renk değil. --list ile renkleri görebilirsiniz.")
+        print(f"[ERROR] '{color}' is not a valid color. Use --list to see options.")
         return False
 
     if verbose:
-        print(f"[→] '{color}' uygulanıyor...")
+        print(f"[→] Applying '{color}'...")
 
     cmd = (
         f"pkexec sh -c '"
@@ -55,19 +55,19 @@ def apply_color(color: str, verbose: bool = True) -> bool:
     try:
         subprocess.run(cmd, shell=True, check=True)
     except subprocess.CalledProcessError:
-        print("[HATA] Renk uygulanamadı. pkexec / papirus-folders kurulu mu?")
+        print("[ERROR] Failed to apply color. Is pkexec / papirus-folders installed?")
         return False
 
     if verbose:
-        print("[→] Thunar kapatılıyor...")
+        print("[→] Closing Thunar...")
     subprocess.run(["thunar", "-q"], stderr=subprocess.DEVNULL)
 
     if verbose:
-        print("[→] XFCE panel yenileniyor...")
+        print("[→] Refreshing XFCE panel...")
     subprocess.run(["xfce4-panel", "-r"], stderr=subprocess.DEVNULL)
 
     if verbose:
-        print("[→] Masaüstü yenileniyor...")
+        print("[→] Refreshing desktop...")
     subprocess.run(["xfdesktop", "--reload"], stderr=subprocess.DEVNULL)
 
     subprocess.Popen(
@@ -76,73 +76,73 @@ def apply_color(color: str, verbose: bool = True) -> bool:
     )
 
     if verbose:
-        print(f"[✓] '{color}' başarıyla uygulandı!")
+        print(f"[✓] '{color}' applied successfully!")
     return True
 
-# ─── CLI Modu ────────────────────────────────────────────────────────────────
+# ─── CLI Mode ────────────────────────────────────────────────────────────────
 
 def install_papirus_folders():
-    print("[→] papirus-folders kuruluyor/güncelleniyor...")
+    print("[→] Installing/updating papirus-folders...")
     try:
         subprocess.run(
             "wget -qO- https://git.io/papirus-folders-install | sh",
             shell=True, check=True
         )
-        print("[✓] papirus-folders hazır.")
+        print("[✓] papirus-folders is ready.")
     except subprocess.CalledProcessError:
-        print("[UYARI] papirus-folders kurulumu başarısız olabilir, devam ediliyor...")
+        print("[WARNING] papirus-folders installation might have failed, proceeding anyway...")
 
 
 def cli_mode():
     print(BANNER)
     print("=" * 60)
-    print("  Etkileşimli Terminal Modu")
+    print("  Interactive Terminal Mode")
     print("=" * 60)
 
-    # Kurulum
-    install_choice = input("\npapirus-folders kurulsun/güncellensin mi? [e/H]: ").strip().lower()
+    # Installation
+    install_choice = input("\nDo you want to install/update papirus-folders? [y/N]: ").strip().lower()
     if install_choice in ("e", "evet", "y", "yes"):
         install_papirus_folders()
 
-    # Renk listesi
-    print("\nMevcut renkler:\n")
+    # Color list
+    print("\nAvailable colors:\n")
     cols = 5
     for i, color in enumerate(COLORS, start=1):
         print(f"  {i:>2}) {color:<14}", end="" if i % cols else "\n")
     if len(COLORS) % cols:
         print()
 
-    # Seçim
+    # Selection
     print()
     try:
-        raw = input("Renk numarasını girin: ").strip()
+        raw = input("Enter color number: ").strip()
         choice_num = int(raw)
     except (ValueError, EOFError):
-        print("[HATA] Geçersiz giriş.")
+        print("[ERROR] Invalid input.")
         sys.exit(1)
 
     if not (1 <= choice_num <= len(COLORS)):
-        print(f"[HATA] 1 ile {len(COLORS)} arasında bir sayı girin.")
+        print(f"[ERROR] Enter a number between 1 and {len(COLORS)}.")
         sys.exit(1)
 
     chosen = COLORS[choice_num - 1]
-    print(f"\nSeçilen renk: {chosen}")
+    print(f"\nSelected color: {chosen}")
 
     success = apply_color(chosen)
     if success:
-        print("\nDeğişiklikler oturum kapatmadan da görünür olmalı.")
-        print("Görünmüyorsa oturumu kapatıp açmayı deneyin.")
+        print("\nChanges should be visible without logging out.")
+        print("If not, try logging out and back in.")
     sys.exit(0 if success else 1)
 
 
 def list_mode():
-    print("Mevcut Papirus renkleri:\n")
+    print("Available Papirus colors:\n")
     for i, color in enumerate(COLORS, start=1):
         print(f"  {i:>2}. {color}")
-    print(f"\nToplam: {len(COLORS)} renk")
+    print(f"\nTotal: {len(COLORS)} colors")
 
 
-# ─── GTK Renk Okuma (GUI için) ───────────────────────────────────────────────
+# ─── GTK Color Reader (For GUI) ──────────────────────────────────────────────
 
 def get_gtk_colors() -> dict:
     try:
@@ -199,10 +199,10 @@ def get_gtk_colors() -> dict:
             "BORDER":       "#3a3a3a",
         }
 
-# ─── GUI – İkon Yükleyici Thread ─────────────────────────────────────────────
+# ─── GUI – Icon Loader Thread ────────────────────────────────────────────────
 
 def _gui_imports():
-    """GUI bağımlılıklarını yalnızca gerektiğinde import eder."""
+    """Imports GUI dependencies only when needed."""
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
         QLabel, QListWidget, QListWidgetItem, QPushButton, QMessageBox,
@@ -223,10 +223,10 @@ def gui_mode():
         from PyQt6.QtGui import QPixmap
         from PyQt6.QtCore import Qt, QThread, pyqtSignal
     except ImportError:
-        print("[HATA] PyQt6 bulunamadı. Kurmak için: pip install PyQt6")
+        print("[ERROR] PyQt6 not found. To install: pip install PyQt6")
         sys.exit(1)
 
-    # ── İkon Yükleyici ───────────────────────────────────────────────────────
+    # ── Icon Loader ──────────────────────────────────────────────────────────
     class IconLoader(QThread):
         finished = pyqtSignal(list, str)
 
@@ -274,7 +274,7 @@ def gui_mode():
 
             self.finished.emit(pixmaps, self.color)
 
-    # ── Ana Pencere ──────────────────────────────────────────────────────────
+    # ── Main Window ──────────────────────────────────────────────────────────
     class PapirusGUI(QMainWindow):
         def __init__(self):
             super().__init__()
@@ -318,6 +318,24 @@ def gui_mode():
                     background-color: {self.ACCENT};
                     color: {self.TEXT_PRIMARY};
                 }}
+                QListWidget QScrollBar:vertical,
+                QScrollBar:vertical {{
+                    background: {self.BG_CARD};
+                    width: 10px;
+                    border-radius: 4px;
+                }}
+                QListWidget QScrollBar::handle:vertical,
+                QScrollBar::handle:vertical {{
+                    background: {self.BORDER};
+                    border-radius: 4px;
+                    min-height: 20px;
+                }}
+                QListWidget QScrollBar::add-line:vertical,
+                QListWidget QScrollBar::sub-line:vertical,
+                QScrollBar::add-line:vertical,
+                QScrollBar::sub-line:vertical {{
+                    height: 0;
+                }}
                 QPushButton#apply_btn {{
                     background-color: {self.ACCENT};
                     color: {self.TEXT_PRIMARY};
@@ -336,7 +354,7 @@ def gui_mode():
             root_layout.setContentsMargins(15, 15, 15, 15)
             root_layout.setSpacing(15)
 
-            # Sol panel
+            # Left panel
             left_frame = QFrame(objectName="left_panel")
             left_frame.setFixedWidth(240)
             left_layout = QVBoxLayout(left_frame)
@@ -345,14 +363,42 @@ def gui_mode():
                 f"color: {self.ACCENT_LIGHT}; font-size: 10px; font-weight: bold;"
             )
             left_layout.addWidget(lbl_library)
+
+            # Listbox + left scrollbar container
+            from PyQt6.QtWidgets import QScrollBar
+            list_container = QWidget()
+            list_container_layout = QHBoxLayout(list_container)
+            list_container_layout.setContentsMargins(0, 0, 0, 0)
+            list_container_layout.setSpacing(0)
+
             self.listbox = QListWidget()
+            self.listbox.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             for color in COLORS:
-                self.listbox.addItem(QListWidgetItem(f"  {color}"))
+                item = QListWidgetItem(f"  {color}")
+                item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+                self.listbox.addItem(item)
             self.listbox.currentRowChanged.connect(self._on_select)
-            left_layout.addWidget(self.listbox)
+
+            # Custom scrollbar to be placed on the left side
+            self._left_scrollbar = QScrollBar(Qt.Orientation.Vertical)
+            self._left_scrollbar.setFixedWidth(10)
+            # Update scrollbar when listbox scroll changes
+            self.listbox.verticalScrollBar().rangeChanged.connect(
+                lambda mn, mx: self._left_scrollbar.setRange(mn, mx)
+            )
+            self.listbox.verticalScrollBar().valueChanged.connect(
+                self._left_scrollbar.setValue
+            )
+            self._left_scrollbar.valueChanged.connect(
+                self.listbox.verticalScrollBar().setValue
+            )
+
+            list_container_layout.addWidget(self._left_scrollbar)
+            list_container_layout.addWidget(self.listbox)
+            left_layout.addWidget(list_container)
             root_layout.addWidget(left_frame)
 
-            # Sağ panel
+            # Right panel
             right_widget = QWidget()
             right_layout = QVBoxLayout(right_widget)
             lbl_title = QLabel("Icon Preview")
@@ -421,12 +467,12 @@ def gui_mode():
             success = apply_color(color, verbose=False)
             if success:
                 QMessageBox.information(
-                    self, "Başarılı",
-                    f"{color.capitalize()} uygulandı!\nThunar ve XFCE arayüzü yenilendi.",
+                    self, "Success",
+                    f"{color.capitalize()} applied!\nThunar and XFCE interface refreshed.",
                 )
-                self.status_label.setText(f"✓ {color.upper()} uygulandı")
+                self.status_label.setText(f"✓ {color.upper()} applied")
             else:
-                QMessageBox.critical(self, "Hata", "Renk uygulanamadı veya arayüz yenilenemedi.")
+                QMessageBox.critical(self, "Error", "Failed to apply color or refresh the interface.")
 
     app = QApplication(sys.argv)
     window = PapirusGUI()
@@ -434,15 +480,15 @@ def gui_mode():
     sys.exit(app.exec())
 
 
-# ─── ANSI Renk Kodları ───────────────────────────────────────────────────────
+# ─── ANSI Color Codes ────────────────────────────────────────────────────────
 
-GREEN  = "\033[32m"          # green – parametreler & komutlar
-DIM    = "\033[2m"           # soluk       – ikincil bilgi
-BOLD   = "\033[1m"           # kalın
-RESET  = "\033[0m"           # sıfırla
+GREEN  = "\033[32m"          # green – parameters & commands
+DIM    = "\033[2m"           # dim   – secondary info
+BOLD   = "\033[1m"           # bold
+RESET  = "\033[0m"           # reset
 
 
-# ─── Özel Yardım Ekranı ──────────────────────────────────────────────────────
+# ─── Custom Help Screen ──────────────────────────────────────────────────────
 
 def print_help():
     G, D, B, R = GREEN, DIM, BOLD, RESET
@@ -487,12 +533,12 @@ Manage folder colors for the Papirus icon theme.
 """)
 
 
-# ─── Giriş Noktası ───────────────────────────────────────────────────────────
+# ─── Entry Point ─────────────────────────────────────────────────────────────
 
 def main():
     args = sys.argv[1:]
 
-    # Argümansız → GUI
+    # No arguments → GUI
     if not args:
         gui_mode()
         return
