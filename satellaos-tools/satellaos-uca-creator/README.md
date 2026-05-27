@@ -45,9 +45,9 @@ Designed for **Debian / XFCE** systems (including Linux Mint Xfce, Xubuntu, etc.
 
 Install dependencies:
 
+Debian 13 | SatellaOS Trixie
+
 ```bash
-pip install PyQt6
-# or
 sudo apt install --install-recommends -y python3 python3-pyqt6 whiptail python3-gi libgtk-3-0 gir1.2-gtk-3.0
 ```
 
