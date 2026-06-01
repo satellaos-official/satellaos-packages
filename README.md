@@ -1,63 +1,127 @@
-# satellaos-packages
+# SatellaOS Packages
 
-> 🇬🇧 [English](#english) · 🇹🇷 [Türkçe](#türkçe)
+A collection of tools developed for the **SatellaOS GNU/Linux** ecosystem.
 
----
-
-## English
-
-A curated collection of packages, scripts, and tools built for **SatellaOS** —
-a minimal, performance-focused Debian-based Linux distribution.
-
-### Philosophy
-
-Linux is powerful. It shouldn't be uncomfortable.
-
-`satellaos-packages` exists to close the gap between a raw Linux system and a system
-that actually feels good to use — without bloat, without hand-holding, without giving up control.
-The goal is simple: bring comfort to the Linux world.
-
-### What's Inside
-
-- **packages/apps/** — Prebuilt `.deb` packages for everyday applications
-- **packages/fonts/** — Font packages for a better visual experience
-- **packages/drivers/** — Driver packages for broader hardware support
-- **scripts/install/** — Installation automation scripts
-- **scripts/config/** — System configuration utilities
-- **scripts/utils/** — General-purpose helper tools
-- **docs/** — Additional documentation and guides
-
-### Who Is This For?
-
-Anyone who wants a Linux system that works *with* them, not against them.
-SatellaOS is not built for a fixed audience — it's built to adapt.
+SatellaOS is based on **Debian 13 XFCE**, and most tools in this repository can also be used on standard Debian-based systems.
 
 ---
 
-## Türkçe
+## Repository Structure
 
-**SatellaOS** için hazırlanmış paket, script ve araç koleksiyonu.
-SatellaOS; şişkinlikten uzak, performans odaklı, Debian tabanlı bir Linux dağıtımıdır.
+Each tool is organized using the following directory structure:
 
-### Felsefe
+### `core`
 
-Linux güçlüdür. Rahatsız edici olmak zorunda değildir.
+Contains the main source code of the application. All functionality depends on the files located in this directory.
 
-`satellaos-packages`, ham bir Linux sistemi ile gerçekten iyi hissettiren bir sistem
-arasındaki boşluğu kapatmak için var — şişkinlik olmadan, kontrolden ödün vermeden.
-Amaç basit: Linux dünyasına konfor getirmek.
+### `launcher`
 
-### İçerik
+Contains a launcher script that automatically downloads the latest version of the tool from the internet and executes it from the `/tmp` directory.
 
-- **packages/apps/** — Günlük kullanım için hazır `.deb` paketleri
-- **packages/fonts/** — Daha iyi bir görsel deneyim için font paketleri
-- **packages/drivers/** — Geniş donanım desteği için sürücü paketleri
-- **scripts/install/** — Kurulum otomasyon scriptleri
-- **scripts/config/** — Sistem yapılandırma araçları
-- **scripts/utils/** — Genel amaçlı yardımcı scriptler
-- **docs/** — Ek dokümantasyon ve rehberler
+### `package`
 
-### Kime Göre?
+Contains the packaged `.deb` version of the tool. Required dependencies are installed automatically through the package.
 
-Linux sisteminin kendisiyle değil, kendisi *için* çalışmasını isteyen herkese.
-SatellaOS belirli bir kitleye değil, uyum sağlamaya göre tasarlanmıştır.
+### `dependencies`
+
+Includes a Bash script that installs all dependencies required by the tool.
+
+### `icons`
+
+Contains application icons and related graphical assets.
+
+---
+
+# Available Tools
+
+## SatellaOS Deb Creator
+
+Create Debian packages quickly and easily using either a graphical interface or the terminal.
+
+### Downloads
+
+**Core**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/core/deb-creator.py
+```
+
+**Launcher**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/launcher/deb-creator.sh
+```
+
+**Package**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/package/satellaos-deb-creator_1.0.0_amd64.deb
+```
+
+---
+
+## SatellaOS Papirus Color Manager
+
+Change the colors of the Papirus icon theme with a single click.
+
+### Downloads
+
+**Core**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-papirus-color-manager/core/papirus-color-manager.py
+```
+
+**Launcher**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-papirus-color-manager/launcher/papirus-color-manager.sh
+```
+
+**Package**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-papirus-color-manager/package/satellaos-papirus-color-manager_1.0.0_amd64.deb
+```
+
+---
+
+## SatellaOS UCA Creator
+
+Generate an XFCE `uca.xml` file with predefined custom actions.
+
+### Features
+
+* Includes 14 built-in right-click actions.
+* Allows selective installation of available actions.
+* Designed for XFCE users.
+
+### Warning
+
+> If you already have a customized `uca.xml` file, some or all existing entries may be overwritten. Creating a backup before use is strongly recommended.
+
+### Downloads
+
+**Core**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-uca-creator/core/uca-creator.py
+```
+
+**Launcher**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-uca-creator/launcher/uca-creator.sh
+```
+
+**Package**
+
+```
+https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-uca-creator/package/satellaos-uca-creator_1.0.0_amd64.deb
+```
+
+---
+
+## License
+
+Unless otherwise specified, the tools contained in this repository are distributed under the license provided by their respective projects.
