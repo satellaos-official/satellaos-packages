@@ -9,6 +9,7 @@ Usage:
   python3 papirus-color-manager.py --gui         → Opens graphical interface
   python3 papirus-color-manager.py --cli         → Interactive terminal interface
   python3 papirus-color-manager.py --color <name> → Applies color directly
+  python3 papirus-color-manager.py --m --color <name> → Applies color, no restarts
   python3 papirus-color-manager.py --list        → Lists available colors
   python3 papirus-color-manager.py --help        → Shows this help message
 """
@@ -38,8 +39,15 @@ BANNER = r"""
 
 # ─── Color Application (Common) ──────────────────────────────────────────────
 
-def apply_color(color: str, verbose: bool = True) -> bool:
-    """Applies the color to the system; returns True if successful."""
+def apply_color(color: str, verbose: bool = True, minimal: bool = False) -> bool:
+    """
+    Applies the color to the system; returns True if successful.
+
+    Args:
+        color:   Color name to apply.
+        verbose: Print progress messages.
+        minimal: If True, skip all post-apply restarts (Thunar, XFCE panel, desktop).
+    """
     if color not in COLORS:
         print(f"[ERROR] '{color}' is not a valid color. Use --list to see options.")
         return False
@@ -57,6 +65,11 @@ def apply_color(color: str, verbose: bool = True) -> bool:
     except subprocess.CalledProcessError:
         print("[ERROR] Failed to apply color. Is pkexec / papirus-folders installed?")
         return False
+
+    if minimal:
+        if verbose:
+            print(f"[✓] '{color}' applied (minimal mode – no restarts).")
+        return True
 
     if verbose:
         print("[→] Closing Thunar...")
@@ -504,6 +517,8 @@ Manage folder colors for the Papirus icon theme.
   {G}--gui{R}              Launch the graphical interface {D}(default when no option is given){R}
   {G}--cli{R}              Launch the interactive terminal interface
   {G}--color {R}{G}<name>{R}     Apply a color directly without opening any interface
+  {G}--m{R}                Minimal mode: apply color only, skip all post-apply restarts
+                     {D}(combine with --color: --m --color <name>){R}
   {G}--list{R}             Print all available color names and exit
   {G}--help{R}             Show this help message and exit
 
@@ -523,11 +538,15 @@ Manage folder colors for the Papirus icon theme.
   {G}python3 papirus-color-manager.py --color violet{R}
     {D}# Apply 'violet' immediately, no interface{R}
 
+  {G}python3 papirus-color-manager.py --m --color violet{R}
+    {D}# Apply 'violet' immediately, no restarts (minimal mode){R}
+
   {G}python3 papirus-color-manager.py --color teal{R}
     {D}# Apply 'teal' immediately, no interface{R}
 
 {B}NOTES{R}
   {D}--gui, --cli, --color, and --list are mutually exclusive.
+  --m is a modifier flag and must be combined with --color.
   Applying a color requires pkexec and papirus-folders to be installed.
   Use --list to see all valid color names before using --color.{R}
 """)
@@ -543,7 +562,16 @@ def main():
         gui_mode()
         return
 
-    flag = args[0].lower()
+    # Check for --m modifier flag
+    minimal = "--m" in args
+    filtered_args = [a for a in args if a != "--m"]
+
+    # No remaining args after stripping --m → GUI
+    if not filtered_args:
+        gui_mode()
+        return
+
+    flag = filtered_args[0].lower()
 
     if flag in ("-h", "--help"):
         print_help()
@@ -552,20 +580,24 @@ def main():
         list_mode()
 
     elif flag == "--color":
-        if len(args) < 2:
+        if len(filtered_args) < 2:
             print(f"[ERROR] --color requires a color name. Use --list to see options.")
             sys.exit(1)
-        success = apply_color(args[1])
+        success = apply_color(filtered_args[1], minimal=minimal)
         sys.exit(0 if success else 1)
 
     elif flag == "--cli":
+        if minimal:
+            print("[WARNING] --m has no effect in --cli mode.")
         cli_mode()
 
     elif flag == "--gui":
+        if minimal:
+            print("[WARNING] --m has no effect in --gui mode.")
         gui_mode()
 
     else:
-        print(f"[ERROR] Unknown option: '{args[0]}'. Use --help for usage.")
+        print(f"[ERROR] Unknown option: '{filtered_args[0]}'. Use --help for usage.")
         sys.exit(1)
 
 
