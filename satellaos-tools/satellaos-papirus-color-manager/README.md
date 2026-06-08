@@ -102,6 +102,13 @@ python3 papirus-color-manager.py --color violet
 python3 papirus-color-manager.py --color teal
 ```
 
+**Apply a color without any post-apply restarts (minimal mode):**
+
+```bash
+python3 papirus-color-manager.py --m --color violet
+python3 papirus-color-manager.py --m --color teal
+```
+
 **List all available colors:**
 
 ```bash
@@ -124,20 +131,30 @@ python3 papirus-color-manager.py --help
 | `--gui` | Launch the graphical interface explicitly |
 | `--cli` | Launch the interactive terminal interface |
 | `--color <name>` | Apply a color directly without opening any interface |
+| `--m` | Minimal mode: apply color only, skip all post-apply restarts. Must be combined with `--color` |
 | `--list` | Print all available color names and exit |
 | `--help` | Show the help message and exit |
 
-> `--gui`, `--cli`, `--color`, and `--list` are mutually exclusive.
+> `--gui`, `--cli`, `--color`, and `--list` are mutually exclusive.  
+> `--m` is a modifier flag and must be combined with `--color`.
 
 ---
 
 ## What Happens When a Color is Applied
+
+**Normal mode:**
 
 1. `papirus-folders -C <color>` is run via `pkexec` (requires authentication)
 2. The GTK icon cache is updated (`gtk-update-icon-cache`)
 3. Thunar is restarted
 4. The XFCE panel is refreshed
 5. The desktop is reloaded
+
+**Minimal mode (`--m`):**
+
+1. `papirus-folders -C <color>` is run via `pkexec` (requires authentication)
+2. The GTK icon cache is updated (`gtk-update-icon-cache`)
+3. *(No restarts — Thunar, XFCE panel, and desktop are left untouched)*
 
 Changes should be visible immediately without logging out. If not, log out and back in.
 
