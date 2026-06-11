@@ -1,21 +1,18 @@
 #!/bin/bash
 
-Name="deb-creator"
-URL="https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-$Name/core/$Name.py"
-File="/tmp/$Name.py"
-Location="/tmp/"
+name=deb-creator
+tool_url=https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/core/deb-creator.py
+dark_mode_url=https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/icons/theme/darkmode.png
+light_mode_url=https://raw.githubusercontent.com/satellaos-official/satellaos-packages/refs/heads/main/satellaos-tools/satellaos-deb-creator/icons/theme/lightmode.png
+location=$HOME/.local/share
 
-if ! wget -q --spider --timeout=5 https://raw.githubusercontent.com 2>/dev/null; then
-    if command -v satellaos-netcheck &> /dev/null; then
-        satellaos-netcheck
-    else
-        echo "Error: Internet not Found"
-    fi
-    exit 1
-fi
+# - Creating The File Location -
+mkdir -p "$location/$name"
 
-rm -rf "$File"
+# - Downloading The Tool -
+wget -O "$location/$name/run.py" "$tool_url"
+wget -O "$location/$name/darkmode.png" "$dark_mode_url"
+wget -O "$location/$name/lightmode.png" "$light_mode_url"
 
-wget -q -O "$File" "$URL"
-
-python3 "$File" "$@"
+# - Opening The Tool -
+python3 "$location/$name/run.py" "$@"
